@@ -1,5 +1,5 @@
     /**
-     * @NApiVersion 2.x
+     * @NApiVersion 2.1
      * @NScriptType Suitelet
      * @NModuleScope SameAccount
      */
@@ -225,7 +225,7 @@
                 label: 'TEST'
             });*/
 
-            form.clientScriptModulePath = 'SuiteScripts/KP_DWM_SR_to_Invoice_SL_utility_CS.js ';
+            form.clientScriptModulePath = '../Staging_Area/TC_DWM_SR_to_Invoice_SL_utility_CS.js ';
     
             // Get parameters
             var pageId = parseInt(context.request.parameters.page);
@@ -259,42 +259,7 @@
             var Status = context.request.parameters.Status;
             var invdate = context.request.parameters.invdate;
             var datecreated = context.request.parameters.datecreated;
-            /*var action = context.request.parameters.action;
-            var taskId = context.request.parameters.taskid;
 
-            if(action == 'scheduled'){
-                var myTaskStatus = task.checkStatus({
-                    taskId: taskId
-                });
-
-                log.debug('myTaskStatus',myTaskStatus)
-                log.debug('myTaskStatus.status',myTaskStatus.status)
-                
-                if(myTaskStatus.status == 'COMPLETE'){
-                    var suiteletURL = url.resolveScript({
-                        scriptId: 'customscript_sr_to_invoice_approval',
-                        deploymentId: 'customdeploy_sr_to_invoice_approval',
-                        params: {
-                            entity : entity,
-                            page : 0
-                        }
-                    });
-                    redirect.redirect({ url: suiteletURL });
-                }
-                else{
-                    var suiteletURL = url.resolveScript({
-                        scriptId: 'customscript_sr_to_invoice_approval',
-                        deploymentId: 'customdeploy_sr_to_invoice_approval',
-                        params: {
-                            entity : entity,
-                            action : 'scheduled',
-                            taskid : taskId,
-                            ids : srIds,
-                        }
-                    });
-                    redirect.redirect({ url: suiteletURL }); 
-                }
-            }*/
 
             var soArr = new Array();
             var myUser = runtime.getCurrentUser();
@@ -309,12 +274,14 @@
 
                 //sublist.addMarkAllButtons();
 
-                sublist.addButton({                    id : 'custpage_mark_all_btn',
+                sublist.addButton({
+                    id : 'custpage_mark_all_btn',
                     label : 'Mark All',
                     functionName : 'markAll()'
                 });
 
-                sublist.addButton({                    id : 'custpage_unmark_all_btn',
+                sublist.addButton({
+                    id : 'custpage_unmark_all_btn',
                     label : 'Unmark All',
                     functionName : 'unmarkAll()'
                 });
@@ -1181,45 +1148,7 @@
                     id: 'custpage_date_and_time',
                     type: serverWidget.FieldType.TEXT,
                     label: 'Created Date and Time'
-                });
-
-				/*sublist.addField({
-                    id: 'custpage_pallet',
-                    type: serverWidget.FieldType.TEXT,
-                    label: 'Pallets'
-                });
-
-                sublist.addField({
-                    id: 'custpage_shipping_address',
-                    type: serverWidget.FieldType.TEXT,
-                    label: 'Shipping Address'
-                });
-
-                sublist.addField({
-                    id: 'custpage_consignee_address',
-                    type: serverWidget.FieldType.TEXT,
-                    label: 'Consignee Address'
-                }); 
-
-				sublist.addField({
-					id: 'custpage_shipper_reference',
-					type: serverWidget.FieldType.TEXT,
-					label: 'Shipper Reference'
-                });   
-				
-				sublist.addField({
-					id: 'custpage_zone',
-					type: serverWidget.FieldType.TEXT,
-					label: 'Zone'
-                });   				
-				
-				sublist.addField({
-                    id: 'custpage_program',
-                    type: serverWidget.FieldType.TEXT,
-                    label: 'Program'
-                });*/
-
-                //Column 1-Column 20    
+                });  
 
                 var retrieveSearch = runSearch(entity, srIds, ShipmentStatus,BilltoCode,CustomerAccountCode, HAWB, Origin, Destinantion, PickupDate,DeliverDate,HAWBDate,Handover,ServiceLevel,ShipperCompany,ShipperAddress,ConsigneeCompany,ConsigneeAddress,CommodityType,Mode,Zone,Program,Distance,TruckId,Control,EquipmentCode,Status,invdate,datecreated, PAGE_SIZE);
                 var pageCount = Math.ceil(retrieveSearch.count / PAGE_SIZE);
@@ -1229,23 +1158,6 @@
                     pageId = 0;
                 else if (pageId >= pageCount)
                     pageId = pageCount - 1;
-
-                // Add buttons to simulate Next & Previous
-                /*if (pageId != 0) {‌
-                    form.addButton({
-                        id : 'custpage_previous',
-                        label : 'Previous',
-                        functionName : 'getSuiteletPage(' + (pageId - 1) + ',' + partNo + ',' + unitModel + ',' + description +')'
-                    });
-                }
-
-                if (pageId != pageCount - 1) {‌
-                    form.addButton({
-                        id : 'custpage_next',
-                        label : 'Next',
-                        functionName : 'getSuiteletPage(' + (pageId + 1) + ',' + partNo + ',' + unitModel + ',' + description +')'
-                    });
-                }*/
 
                     var pageField = form.addField({
                         id: 'custpage_form_pagefield',
@@ -1261,7 +1173,7 @@
                         type : serverWidget.FieldType.SELECT
                     });
 
-                    form.clientScriptModulePath = 'SuiteScripts/KP_DWM_SR_to_Invoice_SL_utility_CS.js ';
+                    form.clientScriptModulePath = '../Staging_Area/TC_DWM_SR_to_Invoice_SL_utility_CS.js ';
 
             
                 for (i = 0; i < pageCount; i++) {
@@ -2037,30 +1949,6 @@
                                 value: result.dueTime
                             });
                         }
-
-                        /*if(result.pallets){
-                            sublist.setSublistValue({
-                                id: 'custpage_pallet',
-                                line: j,
-                                value: result.pallets
-                            });
-                        }*/
-
-                        /*if(result.shippingAddress){
-                            sublist.setSublistValue({
-                                id: 'custpage_shipping_address',
-                                line: j,
-                                value: result.shippingAddress
-                            });
-                        }
-
-                        if(result.consignmentAssignment){
-                            sublist.setSublistValue({
-                                id: 'custpage_consignee_address',
-                                line: j,
-                                value: result.consignmentAssignment
-                            });
-                        }*/
 						
 						if(result.department){
                             sublist.setSublistValue({
@@ -2119,14 +2007,6 @@
                             });
                         }
 
-                        /*if(result.shipperReference){
-                            sublist.setSublistValue({
-                                id: 'custpage_shipper_reference',
-                                line: j,
-                                value: result.shipperReference
-                            });
-                        }*/
-
                         if(result.paycode){
                             sublist.setSublistValue({
                                 id: 'custpage_pay_code',
@@ -2142,14 +2022,6 @@
                                 value: result.createdDate
                             });
                         }
-
-                        /*if(result.total){
-                            sublist.setSublistValue({
-                                id: 'custpage_total',
-                                line: j,
-                                value: result.Total
-                            });
-                        }*/
 
                         if(result.intNotes){
                             sublist.setSublistValue({
@@ -2635,97 +2507,7 @@
         else if (context.request.method === 'POST') {
             log.debug("Suitelet is posting.")
             var myUser = runtime.getCurrentUser();
-            //Ownership setting
-            /*var SRlineCount = context.request.getLineCount({
-                group: 'custpage_shipment_list'
-            });
-            
-            log.debug('SRlineCount',SRlineCount)
 
-            var so = context.request.parameters.custpage_sales_order;
-            log.debug('so',so)
-            if(so){
-                var soIdsVal = so.split('');
-            }
-            else{
-                var soIdsVal = new Array();
-            }
-
-            log.debug('soIdsVal',soIdsVal)
-            log.debug('soIdsVal lenght',soIdsVal.length)
-
-            for(var i = 0; i<SRlineCount; i++){
-                var isMark =  context.request.getSublistValue({
-                    group: 'custpage_shipment_list',
-                    name: 'custpage_shipment_mark',
-                    line: i
-                });
-                
-                var srID =  context.request.getSublistValue({
-                    group: 'custpage_shipment_list',
-                    name: 'custpage_sr_id',
-                    line: i
-                });
-
-                var srRec = search.lookupFields({
-                    type: search.Type.SALES_ORDER,
-                    id: srID,
-                    columns: ['tranid','custbody_owned_by_sa']
-                });
-
-                //log.debug('srRec.custbody_owned_by_sa',srRec.custbody_owned_by_sa)
-
-                var ownerID =  context.request.getSublistValue({
-                    group: 'custpage_shipment_list',
-                    name: 'custpage_owner_id',
-                    line: i
-                });
-
-                if(srRec.custbody_owned_by_sa.length == 0){
-                    if(isMark == 'T'){
-                        var soRec = record.submitFields({
-                            type: record.Type.SALES_ORDER,
-                            id: srID,
-                            values: {
-                                custbody_owned_by_sa: myUser.id
-                            }
-                        });
-
-                        var soExist = 0;
-                        soIdsVal.push(srID);                        
-                    }
-                }
-                else{
-                    if(isMark == 'T' && srRec.custbody_owned_by_sa[0].value != myUser.id){
-                        //log.debug('Else If')
-                    }
-                    else if(isMark == 'F' && srRec.custbody_owned_by_sa[0].value == myUser.id){
-                        var soRec = record.submitFields({
-                            type: record.Type.SALES_ORDER,
-                            id: srID,
-                            values: {
-                                custbody_owned_by_sa: null
-                            }
-                        });
-                        
-                        var soExist = 0;
-
-                        var indexOfSO = soIdsVal.indexOf(srID);
-                        log.debug('indexOfSO',indexOfSO)
-                        if(indexOfSO >= 0){
-                            soIdsVal.splice(indexOfSO,1);
-                            //log.debug('SO lenght',soIdsVal.length)
-                            //log.debug('Here else if for if',soIdsVal)
-                        }
-                        else{
-                            soIdsVal.push(soIdsVal[i]);
-                            //log.debug('Here else if for else',soIdsVal)
-                        }
-                    }
-                }
-            }
-
-            var soPost = soIdsVal.join(',')*/
             //Params Setting in Referesh
             var entity = context.request.parameters.custpage_form_entity;   
             var so = context.request.parameters.custpage_sales_order;
@@ -2758,8 +2540,8 @@
             var datecreated = context.request.parameters.custpage_form_date_created;
 
             var suiteletURL = url.resolveScript({
-                scriptId: 'customscript_sr_to_invoice_approval',
-                deploymentId: 'customdeploy_sr_to_invoice_approval',
+                scriptId: 'customscript_tc_staging_area_sl',
+                deploymentId: 'customdeploy_tc_staging_area_sl',
                 params: {
                     entity : entity,
                     so : so,
@@ -2800,7 +2582,6 @@
         };
 
         function runSearchVendorInv(vendorId, hawbVal){
-            //var vendorbillSearchColCompanyName = search.createColumn({ name: 'companyname', join: 'vendor' });
             var vendorbillSearchColAmountForeignCurrency = search.createColumn({ name: 'fxamount', summary: search.Summary.SUM });
             var vendorbillSearch = search.create({
             type: 'vendorbill',
@@ -3938,8 +3719,6 @@
                 })
             })
             return srResults;
-                // Continue processing the next page of search results
         }
 
     });
-    

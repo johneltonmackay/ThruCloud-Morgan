@@ -1,23 +1,12 @@
 /**
- * @NApiVersion 2.x
+ * @NApiVersion 2.1
  * @NScriptType ClientScript
  * @NModuleScope SameAccount
  */
 define(['N/runtime','N/currentRecord', 'N/search', 'N/record','N/url', 'N/ui/dialog','N/format','N/https'],
 
 function(runtime, currentRecord, search, record, url, dialog, format, https) {
-    /**
-     * Function to be executed when field is changed.
-     *
-     * @param {Object} scriptContext
-     * @param {Record} scriptContext.currentRecord - Current form record
-     * @param {string} scriptContext.sublistId - Sublist name
-     * @param {string} scriptContext.fieldId - Field name
-     * @param {number} scriptContext.lineNum - Line number. Will be undefined if not a sublist or matrix field
-     * @param {number} scriptContext.columnNum - Line number. Will be undefined if not a matrix field
-     *
-     * @since 2015.2
-     */
+
     function pageInit_sr_to_inv(scriptContext) {
         var currRecObj = currentRecord.get();
         var myUser = runtime.getCurrentUser();
@@ -448,8 +437,8 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
             });
 
             var suiteletURL = url.resolveScript({
-                scriptId: 'customscript_sr_to_invoice_approval',
-                deploymentId: 'customdeploy_sr_to_invoice_approval',
+                scriptId: 'customscript_tc_staging_area_sl',
+                deploymentId: 'customdeploy_tc_staging_area_sl',
                 params: {
                     entity : entityVal
                 }
@@ -578,8 +567,8 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
     
 
            var suiteletURL = url.resolveScript({
-            scriptId: 'customscript_sr_to_invoice_approval',
-            deploymentId: 'customdeploy_sr_to_invoice_approval',
+            scriptId: 'customscript_tc_staging_area_sl',
+            deploymentId: 'customdeploy_tc_staging_area_sl',
             params: {
                     page : pageId,
                     entity : entityVal,
@@ -16362,7 +16351,7 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                             custbody_owned_by_sa: myUser.id
                         }
                     });
-                     //
+
                     var soArr = new Array();
                     var soExist = 0;
                     var soIdsVal = currRecObj.getValue({
@@ -16394,8 +16383,6 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                         }
                     }
 
-                //var soStr = soArr.join();
-                //console.log('soStr',soStr)
                 currRecObj.setValue({
                     fieldId: 'custpage_sales_order',
                     value: soArr
@@ -16416,7 +16403,7 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                             custbody_owned_by_sa: null
                         }
                     });
-                     //
+                     
                      var soArr = new Array();
                      var soExist = 0;
                      var soIdsVal = currRecObj.getValue({
@@ -16447,8 +16434,7 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                              console.log('if Exist',soArr)
                          }
                      }
-                     //var soStr = soArr.join();
-                     //console.log('soStr',soStr)
+           
                      currRecObj.setValue({
                          fieldId: 'custpage_sales_order',
                          value: soArr
@@ -16483,9 +16469,6 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
         var soIdString = JSON.stringify(soIds)
         const promises = [];
         if(soIds.length > 0){ 
-            //alert(srCnt+' Shipments Imported')
-            //var applyIdStr = soIds.toString();
-           
             soIds.forEach(function (id) {
                 promises.push(new Promise(function (resolve,reject) {
                     var srRec = search.lookupFields({
@@ -16508,8 +16491,8 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                         applySrId.push(id)
                         var postData = {"entity" : entity, "ids" : id, "action" : 'autorate'};
                         var restUrl = url.resolveScript({
-                            scriptId: 'customscript_rl_approve_sa', // RESTlet scriptId
-                            deploymentId: 'customdeploy_rl_approve_sa' // RESTlet deploymentId
+                            scriptId: 'customscript_tc_approved_sa_rl', // RESTlet scriptId
+                            deploymentId: 'customdeploy_tc_approved_sa_rl' // RESTlet deploymentId
                         });
     
                         var xhr = new XMLHttpRequest();
@@ -16527,18 +16510,6 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                         };
 
                         xhr.send(JSON.stringify(postData));
-
-                        /*var headers = new Array();
-                        headers['Content-type'] = 'application/json';
-                                        
-                        // Perform HTTP POST call
-                        var salesRepRec = https.post({
-                            url: restUrl,
-                            headers: headers,
-                            body: postData
-                        });
-    
-                        //alert(salesRepRec.body);*/
                     }
                 }));
             });
@@ -16558,8 +16529,8 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                 var applyIdStr = applySrId.toString();		
         
                 var suiteletURL = url.resolveScript({
-                    scriptId: 'customscript_sr_to_invoice_approval',
-                    deploymentId: 'customdeploy_sr_to_invoice_approval',
+                    scriptId: 'customscript_tc_staging_area_sl',
+                    deploymentId: 'customdeploy_tc_staging_area_sl',
                     params: {
                         entity : entity,
                         //page : 0,
@@ -17672,13 +17643,7 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                             vendorBCostArr[4] = '';
                                 
                             for (var i = 0; i < vendorArr.length; i++) {
-                                //console.log('vendorArr[i]',vendorArr[i])
-                                /*var vendorName = search.lookupFields({
-                                    type: search.Type.VENDOR,
-                                    id: vendorArr[i],
-                                    columns: ['entityid']
-                                });*/
-                                
+
                                 var vendorSearchColEntityId = search.createColumn({ name: 'entityid'});
                               
                                 var vendorSearch = search.create({
@@ -17714,7 +17679,6 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                                         ['name', 'anyof', vendorArr[i]],
                                     ],
                                     columns: [
-                                        //vendorbillSearchColCompanyName,
                                         vendorbillSearchColAmountForeignCurrency,
                                     ],
                                     });
@@ -17940,10 +17904,7 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                         csvContent += column1Value + ',' + column2Value + ',' + column3Value + ',' + column4Value + ',' + column5Value + ',' + column6Value + ',' + column7Value + ',' + column8Value + ',' + column9Value + ',' + column10Value + ',' + column11Value + ',' + column12Value +','+ column13Value + ',' + column14Value + ',' + column15Value + ',' + column16Value + ',' + column17Value + ',' + column18Value +','+  column19Value + ',' + column20Value + ',' + column21Value +','+  column22Value + ',' + column23Value + ',' + column24Value +',' +column25Value + ',' + column26Value + ',' + column27Value + ',' + column28Value + ',' + column29Value + ',' + column30Value +','+ column31Value + ',' + column32Value + ',' + column33Value +','+ column34Value + ',' + column35Value + ',' + column36Value +','+ column37Value + ',' + column38Value + ',' + column39Value + ',' + column40Value + ',' + column41Value + ',' + column42Value +','+  column43Value + ',' + column44Value + ',' + column45Value + ',' + column46Value +','+ column47Value + ',' + column48Value + ',' + column49Value + ',' + column50Value + ',' + column51Value + ',' + column52Value + ',' + column53Value +','+ column54Value + ',' + column55Value + ',' + column56Value +','+ vendorNameArr[0] + ',' + vendorBCostArr[0] + ',' + vendorNameArr[1] + ',' + vendorBCostArr[1] + ',' + vendorNameArr[2] + ',' + vendorBCostArr[2] +','+  vendorNameArr[3] + ',' + vendorBCostArr[3] + ',' + vendorNameArr[4] +','+  vendorBCostArr[4] + ',' + column67Value + ',' + column68Value + ',' + column69Value + ',' + column70Value + ',' + column71Value + ',' + column72Value + ',' + column73Value + ',' + column74Value +','+ column75Value + ',' + column76Value + ',' + column77Value +','+ column78Value + ',' + column79Value + ',' + column80Value +','+ column81Value + ',' + column82Value +','+ column83Value + ',' + column84Value + ',' + column85Value +','+ column86Value + ',' + column87Value + ',' + column88Value +','+ column89Value + ',' + column90Value +','+ column91Value + ',' + column92Value +','+ column93Value + ',' + column94Value + ',' + column95Value +','+ column96Value + ',' + column97Value +','+ column98Value + ',' + column99Value +','+ column100Value + ',' + column101Value + ',' + column102Value +','+ column103Value + ',' + column104Value +','+ column105Value + ',' +columnTotalValue + ',' + column106Value + ',' + column107Value + ',' + column108Value +',' +column109Value + ',' + column110Value +'\n';
                             
                     })
-                }
-        
-        //var csvContent = "Invoice,Owned By,Shipment Record Status,Standard Status,Shipment Status,Bill to Account,HAWB,Document Number #,HAWB Date,Invoice Post Date,Origin,Destination,Pick Up Date,Delivery Date,Pick Up Wait Time(mins),Delivery Wait Time(mins),Pick Up Time,Delivery Time,Hand Over,DIM Fact,Service Level,Actual Weight,DIM Weight,Weight UOM,Due Time,Pallets,Department,Description,Equipment Code,Main Mode,TPT,Bill to Name,Pieces,Shipper Reference,Pay Code,Created Date and Time,Internal Billing Notes,Customer per Entity,Commodity Type,Mode,Distance(in miles),Truck ID,Trailer ID,Driver ID,Main Shipper Company Name,Shipper Company,Shipper Address,Shipper City Town,Shipper State Region Province,Shipper Postal Code,Shipper Country,Shipper Airport Code,Main Consignee Company Name,Consignee Company,Consignee Address,Consignee City Town,Consignee State Region Province,Consignee Postal Code,Consignee Country,Consignee Airport Code,Vendor Name 1,Vendor Invoice Cost 1,Vendor Name 2,Vendor Invoice Cost 2,Vendor Name 3,Vendor Invoice Cost 3,Vendor Name 4,Vendor Invoice Cost 4,Vendor Name 5,Vendor Invoice Cost 5,Intel Service Code,SCAC Code,FREIGHT,DISCOUNT,FUEL,WAIT TIME PICK UP,WAIT TIME DELIVERY,SAME DAY DELIVERY,AFTER HOURS PICK UP,AFTER HOURS DELIVERY,STORAGE,ADDITIONAL MANPOWER,SMART PALLET,CFC,FAG,WEEKEND OR HOLIDAY DELIVERY,SPECIAL,HANDLING,SPECIAL HANDLING,HAZARDOUS CARGO HANDLING CHARGE AT ORIGIN,LAYOVER FEE,WEEKEND PICKUP/DLVY,DETENTION CHARGE,VEHICLE WAITING TIME AT ORIGIN,VEHICLE WAITING TIME AT DESTINATION,TRUCK ORDERED NOT USED,ATTEMPTED PICK UP,EXTERNAL NOTES\n";
-        
+                }        
         
         var blob = new Blob([csvContent], { type: 'text/csv' });
         var url = URL.createObjectURL(blob);
@@ -17979,8 +17940,6 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                     line: i
                 });
 
-                //applySrId.push(srID)
-
                 var srRec = search.lookupFields({
                     type: search.Type.SALES_ORDER,
                     id: srID,
@@ -17998,7 +17957,7 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                 }
             }
         }
-        //var applyIdStr = soIdsVal.toString();
+
       var pageId = currRecObj.getValue({
             fieldId: 'custpage_pageid'
         });
@@ -18110,8 +18069,8 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
         });
 
        var suiteletURL = url.resolveScript({
-        scriptId: 'customscript_sr_to_invoice_approval',
-        deploymentId: 'customdeploy_sr_to_invoice_approval',
+        scriptId: 'customscript_tc_staging_area_sl',
+        deploymentId: 'customdeploy_tc_staging_area_sl',
         params: {
                 page : pageId,
                 entity : entity,
@@ -18168,8 +18127,6 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                     fieldId: 'custpage_sr_id',
                     line: i
                 });
-
-                //applySrId.push(srID)
 
                 var srRec = search.lookupFields({
                     type: search.Type.SALES_ORDER,
@@ -18302,8 +18259,8 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
 
 
        var suiteletURL = url.resolveScript({
-        scriptId: 'customscript_sr_to_invoice_approval',
-        deploymentId: 'customdeploy_sr_to_invoice_approval',
+        scriptId: 'customscript_tc_staging_area_sl',
+        deploymentId: 'customdeploy_tc_staging_area_sl',
         params: {
                 page : pageId,
                 entity : entity,
@@ -18454,8 +18411,8 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
 
        
              var suiteletURL = url.resolveScript({
-                scriptId: 'customscript_popup_search_filter_params',
-                deploymentId: 'customdeploy_popup_search_filter_params',
+                scriptId: 'customscript_tc_search_popup_sl',
+                deploymentId: 'customdeploy_tc_search_popup_sl',
                 params: {
                     entity: entity,
                     shipmentStatus: shipmentStatus,
@@ -18487,8 +18444,6 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                 }
             });
             window.location.href = suiteletURL
-            //window.open(suiteletURL, "New Window Title", params);
-             //return true;
     }
 
     function rejectSR() {
@@ -18522,19 +18477,6 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
         var deleteSr = [];
        
         for(var x=0;x<soIds.length;x++){
-            
-            /*var isApply = currRecObj.getSublistValue({
-                sublistId: 'custpage_shipment_list',
-                fieldId: 'custpage_shipment_mark',
-                line: i
-            });
-
-            var srID =  currRecObj.getSublistValue({
-                sublistId: 'custpage_shipment_list',
-                fieldId: 'custpage_sr_id',
-                line: i
-            });*/
-
             var srID = soIds[x];
             console.log('srID',srID)
 
@@ -18550,7 +18492,6 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                 columns: ['tranid','entity','cseg_hawborig','custbody_owned_by_sa']
             });
             
-            //if(isApply && srRec.custbody_owned_by_sa[0].value == myUser.id){
                 
 
                     if(srRec.cseg_hawborig.length != 0){
@@ -18674,8 +18615,8 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
         else{
             alert("Shipment Record(s) "+applySrId+" Already been Rejected")
             var suiteletURL = url.resolveScript({
-            scriptId: 'customscript_sr_to_invoice_approval',
-            deploymentId: 'customdeploy_sr_to_invoice_approval',
+            scriptId: 'customscript_tc_staging_area_sl',
+            deploymentId: 'customdeploy_tc_staging_area_sl',
             params: {
                 page : 0,
                 entity : entity
@@ -18721,9 +18662,6 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
         console.log('soIds',soIds.length)
         const promises = [];
         if(soIds.length > 0){ 
-            //alert(srCnt+' Shipments Imported')
-            //var applyIdStr = soIds.toString();
-           
             soIds.forEach(function (id){
                 promises.push(new Promise(function (resolve,reject) {
                     var srRec = search.lookupFields({
@@ -18740,19 +18678,9 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                         applySRIds.push(id);
                         var postData = {"entity" : entity, "ids" : id, "action" : 'approve'};
                         var restUrl = url.resolveScript({
-                            scriptId: 'customscript_rl_approve_sa', // RESTlet scriptId
-                            deploymentId: 'customdeploy_rl_approve_sa' // RESTlet deploymentId
+                            scriptId: 'customscript_tc_approved_sa_rl', // RESTlet scriptId
+                            deploymentId: 'customdeploy_tc_approved_sa_rl' // RESTlet deploymentId
                         });
-
-                        /*var headers = new Array();
-                        headers['Content-type'] = 'application/json';
-                                    
-                        // Perform HTTP POST call
-                        var salesRepRec = https.post({
-                            url: restUrl,
-                            headers: headers,
-                            body: postData
-                        });*/
 
                         var xhr = new XMLHttpRequest();
                         xhr.open("POST", restUrl, true);
@@ -18773,14 +18701,6 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                         };
 
                         xhr.send(JSON.stringify(postData));
-
-                       
-                        /*if(response){
-                            resolve("Promise is fulfilled!");
-                        }
-                        else {
-                            reject("Promise failed!");
-                        }*/
                     }
                     else{
                         invTrue.push(tranidSR)
@@ -18806,8 +18726,8 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                 }
     
                 var suiteletURL = url.resolveScript({
-                    scriptId: 'customscript_sr_to_invoice_approval',
-                    deploymentId: 'customdeploy_sr_to_invoice_approval',
+                    scriptId: 'customscript_tc_staging_area_sl',
+                    deploymentId: 'customdeploy_tc_staging_area_sl',
                     params: {
                         entity : entity,
                         page : 0
@@ -18820,42 +18740,6 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                 console.error(error);
             });
         }
-
-        /*if(applySRIds.length == 0){
-            alert("Please Apply a Shipment Record to Approve")
-            var buttonReject = document.getElementById('custpage_reject');
-            buttonReject.disabled = false;
-
-            var buttonSub = document.getElementById('custpage_submit');
-            buttonSub.disabled = false;
-        }
-
-        if(invTrue.length > 0){
-            alert('Shipment Record(s) '+invTrue+' Cannot be approved, Already created an Invoice for this Shipment Record')
-            var buttonReject = document.getElementById('custpage_reject');
-            buttonReject.disabled = false;
-
-            var buttonSub = document.getElementById('custpage_submit');
-            buttonSub.disabled = false;
-        }
-
-        if(totalSuccess || totalFailed){
-            alert( totalSuccess+' Shipments Imported and '+totalFailed+' Shipments Failed');
-        }
-        
-
-            var suiteletURL = url.resolveScript({
-                scriptId: 'customscript_sr_to_invoice_approval',
-                deploymentId: 'customdeploy_sr_to_invoice_approval',
-                params: {
-                    entity : entity,
-                    page : 0
-                }
-            });
-            window.location.href = suiteletURL
-        */
-		    //log.debug('salesRepRec', salesRepRec.body);
-        
     }
   
 
