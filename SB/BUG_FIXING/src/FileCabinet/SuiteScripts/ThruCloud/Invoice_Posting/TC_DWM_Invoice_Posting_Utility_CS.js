@@ -443,7 +443,7 @@ function(runtime, currentRecord, search, record, url, dialog, format) {
         }
         if(applyTranId.length != 0){
             alert("Invoice Record(s) "+applyTranId+" is Approving")
-
+            const promises = [];
             applyInvId.forEach(function (id) {
                 promises.push(new Promise(function (resolve,reject) {
                         var suiteletURL = url.resolveScript({
@@ -611,7 +611,6 @@ function(runtime, currentRecord, search, record, url, dialog, format) {
             }
         }
         console.log('invFieapplyInvIdlds',applyInvId)
-        const promises = [];
         if(applyInvalid.length != 0){
             alert("Invoice Record(s) "+applyInvalid+" is still Pending Approval and cannot be Posted")
             var buttonReject = document.getElementById('custpage_reject');
@@ -625,7 +624,7 @@ function(runtime, currentRecord, search, record, url, dialog, format) {
         }
         if(applyTranId.length != 0){
             alert("Invoice Record(s) "+applyTranId+" is/are posting")
-
+            const promises = [];
             applyInvId.forEach(function (objData) {
                 promises.push(new Promise(function (resolve,reject) {
                         console.log("objData",objData)

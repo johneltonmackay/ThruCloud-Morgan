@@ -30,7 +30,57 @@ define(['N/record','N/search', 'N/ui/serverWidget', 'N/url', 'N/redirect', 'N/fo
                     var srRec = search.lookupFields({
                         type: search.Type.SALES_ORDER,
                         id: srID,
-                        columns: ['tranid','custbody_invoice','entity','cseg_hawborig','trandate','custbody_owned_by_sa','custbody_freight_rep_hidden','custbody_discount_rep_hidden','custbody_fuel_rep_hidden','custbody_waittimepu_rep_hidden','custbody_waittimedel_rep_hidden','custbody_same_day_del_rep_hidden','custbody_after_hour_pu_rep_hidden','custbody_after_hours_del_rep_hidden','custbody_storage_rep_hidden','custbody_manpower_rep_hidden','custbody_smart_pallet_rep_hidden','custbody_cfc_rep_hidden','custbody_fag_rep_hidden','custbody_weekend_holi_dlvy_rep_hidden','custbody_special_rep_hidden','custbody_handling_rep_hidden','custbody_special_handling_rep_hidden','custbody_hazardous_cargo_rep_hidden','custbody_layover_fee_rep_hidden','custbody_weekend_pickup_dlvy_rep_hidde','custbody_detention_charge_rep_hidden','custbody_veh_waiting_time_rep_hidden','custbody_veh_wait_time_dest_rep_hidden','custbody_truck_order_not_rep_hidden','custbody_attempted_pickup_rep_hidden','custbody_liftgate_truck_hidden','custbody_brokerage_govt_fees_hidden','custbody_screening_hidden','custbody_overtime_charges_hidden','custbody_break_bulk_fee_hidden','custbody_edi_fee_hidden','custbody_customs_formalities_hidden','custbody_stop_fee_hidden','custbody_brokerage_customsdutieshidden','custbody_attempted_delivery_hidden','custbody_dock_fee_hidden','custbody_warehouse_pick_pack_hidden','custbody_storage_at_destination_hidden','custbody_government_dutiestaxes_hidden',]
+                        columns: ['tranid',
+                        'custbody_invoice',
+                        'entity',
+                        'cseg_hawborig',
+                        'trandate',
+                        'custbody_owned_by_sa',
+                        'custbody_freight_rep_hidden',
+                        'custbody_discount_rep_hidden',
+                        'custbody_fuel_rep_hidden',
+                        'custbody_waittimepu_rep_hidden',
+                        'custbody_waittimedel_rep_hidden',
+                        'custbody_same_day_del_rep_hidden',
+                        'custbody_after_hour_pu_rep_hidden',
+                        'custbody_after_hours_del_rep_hidden',
+                        'custbody_storage_rep_hidden',
+                        'custbody_manpower_rep_hidden',
+                        'custbody_smart_pallet_rep_hidden',
+                        'custbody_cfc_rep_hidden',
+                        'custbody_fag_rep_hidden',
+                        'custbody_weekend_holi_dlvy_rep_hidden',
+                        'custbody_special_rep_hidden',
+                        'custbody_handling_rep_hidden',
+                        'custbody_special_handling_rep_hidden',
+                        'custbody_hazardous_cargo_rep_hidden',
+                        'custbody_layover_fee_rep_hidden',
+                        'custbody_weekend_pickup_dlvy_rep_hidde',
+                        'custbody_detention_charge_rep_hidden',
+                        'custbody_veh_waiting_time_rep_hidden',
+                        'custbody_veh_wait_time_dest_rep_hidden',
+                        'custbody_truck_order_not_rep_hidden',
+                        'custbody_attempted_pickup_rep_hidden',
+                        'custbody_liftgate_truck_hidden',
+                        'custbody_brokerage_govt_fees_hidden',
+                        'custbody_screening_hidden',
+                        'custbody_overtime_charges_hidden',
+                        'custbody_break_bulk_fee_hidden',
+                        'custbody_edi_fee_hidden',
+                        'custbody_customs_formalities_hidden',
+                        'custbody_stop_fee_hidden',
+                        'custbody_brokerage_customsdutieshidden',
+                        'custbody_attempted_delivery_hidden',
+                        'custbody_dock_fee_hidden',
+                        'custbody_warehouse_pick_pack_hidden',
+                        'custbody_storage_at_destination_hidden',
+                        'custbody_government_dutiestaxes_hidden',
+                        'custbody_detention_of_trailers',
+                        'custbody_permit_escort_charges',
+                        'custbody_stop_off_charge',
+                        'custbody_layover_charges_destination',
+                        'custbody_cancelled_order_origin'
+                    ]
                     });         
         
                     if(srRec.cseg_hawborig.length != 0){
@@ -97,6 +147,11 @@ define(['N/record','N/search', 'N/ui/serverWidget', 'N/url', 'N/redirect', 'N/fo
                                 custbody_storage_at_destination: srRec.custbody_storage_at_destination_hidden,
                                 custbody_government_duties_and_taxes: srRec.custbody_government_dutiestaxes_hidden,
                                 custbody_external_notes : srRec.custbody_external_notes_rep_hidden,
+                                custbody_detention_of_trailers : srRec.custbody_detention_of_trailers,
+                                custbody_permit_escort_charges : srRec.custbody_permit_escort_charges,
+                                custbody_stop_off_charge : srRec.custbody_stop_off_charge,
+                                custbody_layover_charges_destination : srRec.custbody_layover_charges_destination,
+                                custbody_cancelled_order_origin : srRec.custbody_cancelled_order_origin,
                             }
                         });
 
@@ -124,7 +179,12 @@ define(['N/record','N/search', 'N/ui/serverWidget', 'N/url', 'N/redirect', 'N/fo
                                     fieldId: 'tranid',
                                     value: hawbVal
                                 })
-                
+
+                                newINVRec.setValue({
+                                    fieldId: 'custbody_inv_approval_status',
+                                    value: 2
+                                })
+
                                 log.debug('After Setting')
                                 var invId = newINVRec.save();
                                 log.debug('invId',invId)
@@ -217,7 +277,30 @@ define(['N/record','N/search', 'N/ui/serverWidget', 'N/url', 'N/redirect', 'N/fo
                         var srRec = search.lookupFields({
                             type: search.Type.SALES_ORDER,
                             id: srID,
-                            columns: ['custbody_owned_by_sa','custbody_invoice','tranid','entity','custbody_billtoaccount','trandate','custbody_servicelevel','custbody_origin','custbody_destination','custbody_shipper_address','custbody_consignee_address','custbody_shipmentstatus','custbody_pieces','custbody_chargeable_weight','custbody_pickupwaittime','custbody_deliverywaittime','custbody_actualweight','custbody_dim_weight','custbody_pickupdate','custbody_deliverdate','custbody_pickuptime','custbody_deliverytime']
+                            columns: [
+                                'custbody_owned_by_sa',
+                                'custbody_invoice',
+                                'tranid',
+                                'entity',
+                                'custbody_billtoaccount',
+                                'trandate',
+                                'custbody_servicelevel',
+                                'custbody_origin',
+                                'custbody_destination',
+                                'custbody_shipper_address',
+                                'custbody_consignee_address',
+                                'custbody_shipmentstatus',
+                                'custbody_pieces',
+                                'custbody_chargeable_weight',
+                                'custbody_pickupwaittime',
+                                'custbody_deliverywaittime',
+                                'custbody_actualweight',
+                                'custbody_dim_weight',
+                                'custbody_pickupdate',
+                                'custbody_deliverdate',
+                                'custbody_pickuptime',
+                                'custbody_deliverytime'
+                            ]
                         });
                         
                         

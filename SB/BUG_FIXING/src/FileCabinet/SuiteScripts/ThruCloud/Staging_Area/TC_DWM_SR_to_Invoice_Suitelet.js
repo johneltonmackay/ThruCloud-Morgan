@@ -1058,7 +1058,8 @@
                     label: 'Attempted Delivery'
                 });
                 
-                attemptedDel.updateDisplayType({                    displayType: serverWidget.FieldDisplayType.ENTRY
+                attemptedDel.updateDisplayType({
+                    displayType: serverWidget.FieldDisplayType.ENTRY
                 });
 
                 var dockF = sublist.addField({
@@ -1067,7 +1068,8 @@
                     label: 'Dock Fee'
                 });
                 
-                dockF.updateDisplayType({                    displayType: serverWidget.FieldDisplayType.ENTRY
+                dockF.updateDisplayType({
+                    displayType: serverWidget.FieldDisplayType.ENTRY
                 });
 
                 var WPP = sublist.addField({
@@ -1097,6 +1099,56 @@
                 });
                 
                 GDT.updateDisplayType({
+                    displayType: serverWidget.FieldDisplayType.ENTRY
+                });
+                // Additional Accessorial Codes
+                var fldDET = sublist.addField({
+                    id: 'custpage_detention_of_trailers',
+                    type: serverWidget.FieldType.TEXT,
+                    label: 'Detention of Trailers'
+                });
+                
+                fldDET.updateDisplayType({
+                    displayType: serverWidget.FieldDisplayType.ENTRY
+                });
+
+                var fldPER = sublist.addField({
+                    id: 'custpage_permit_escort_charges',
+                    type: serverWidget.FieldType.TEXT,
+                    label: 'Permit/Escort charges'
+                });
+                
+                fldPER.updateDisplayType({
+                    displayType: serverWidget.FieldDisplayType.ENTRY
+                });
+
+                var fldSTO = sublist.addField({
+                    id: 'custpage_stop_off_charge',
+                    type: serverWidget.FieldType.TEXT,
+                    label: 'Stop Off Charge	STO'
+                });
+                
+                fldSTO.updateDisplayType({
+                    displayType: serverWidget.FieldDisplayType.ENTRY
+                });
+
+                var fldLAY = sublist.addField({
+                    id: 'custpage_layover_charges_destination',
+                    type: serverWidget.FieldType.TEXT,
+                    label: 'Layover Charges Destination'
+                });
+                
+                fldLAY.updateDisplayType({
+                    displayType: serverWidget.FieldDisplayType.ENTRY
+                });
+
+                var fldCDF = sublist.addField({
+                    id: 'custpage_cancelled_order_origin',
+                    type: serverWidget.FieldType.TEXT,
+                    label: 'Cancelled Order Origin'
+                });
+                
+                fldCDF.updateDisplayType({
                     displayType: serverWidget.FieldDisplayType.ENTRY
                 });
 
@@ -1346,7 +1398,54 @@
                             var soRecField = search.lookupFields({
                                 type: search.Type.SALES_ORDER,
                                 id: result.id,
-                                columns: ['custbody_freight_rep_hidden','custbody_discount_rep_hidden','custbody_fuel_rep_hidden','custbody_waittimepu_rep_hidden','custbody_waittimedel_rep_hidden','custbody_same_day_del_rep_hidden','custbody_after_hour_pu_rep_hidden','custbody_after_hours_del_rep_hidden','custbody_storage_rep_hidden','custbody_manpower_rep_hidden','custbody_smart_pallet_rep_hidden','custbody_cfc_rep_hidden','custbody_fag_rep_hidden','custbody_weekend_or_holiday_delivery','custbody_special','custbody_handling','custbody_special_handling','custbody_hazardous_cargo','custbody_layover_fee','custbody_weekend_pickup_dlvy','custbody_detention_charge','custbody_vehicle_waiting_time_origin','custbody_vehicle_waiting_time_dest','custbody_truck_ordered_not_used','custbody_attempted_pickup','custbody_lift_gate_truck_or_forklift','custbody_brokerage_govt_fees','custbody_screening','custbody_overtime_charges','custbody_break_bulk_fee','custbody_edi_fee','custbody_customs_formalities','custbody_stop_fee','custbody_brokerage_customs_duties','custbody_attempted_delivery','custbody_dock_fee','custbody_warehouse_pick_and_pack','custbody_storage_at_destination','custbody_government_duties_and_taxes','custbody_sr_total','custbody_external_notes']
+                                columns: [
+                                    'custbody_freight_rep_hidden',
+                                    'custbody_discount_rep_hidden',
+                                    'custbody_fuel_rep_hidden',
+                                    'custbody_waittimepu_rep_hidden',
+                                    'custbody_waittimedel_rep_hidden',
+                                    'custbody_same_day_del_rep_hidden',
+                                    'custbody_after_hour_pu_rep_hidden',
+                                    'custbody_after_hours_del_rep_hidden',
+                                    'custbody_storage_rep_hidden',
+                                    'custbody_manpower_rep_hidden',
+                                    'custbody_smart_pallet_rep_hidden',
+                                    'custbody_cfc_rep_hidden',
+                                    'custbody_fag_rep_hidden',
+                                    'custbody_weekend_or_holiday_delivery',
+                                    'custbody_special',
+                                    'custbody_handling',
+                                    'custbody_special_handling',
+                                    'custbody_hazardous_cargo',
+                                    'custbody_layover_fee',
+                                    'custbody_weekend_pickup_dlvy',
+                                    'custbody_detention_charge',
+                                    'custbody_vehicle_waiting_time_origin',
+                                    'custbody_vehicle_waiting_time_dest',
+                                    'custbody_truck_ordered_not_used',
+                                    'custbody_attempted_pickup',
+                                    'custbody_lift_gate_truck_or_forklift',
+                                    'custbody_brokerage_govt_fees',
+                                    'custbody_screening',
+                                    'custbody_overtime_charges',
+                                    'custbody_break_bulk_fee',
+                                    'custbody_edi_fee',
+                                    'custbody_customs_formalities',
+                                    'custbody_stop_fee',
+                                    'custbody_brokerage_customs_duties',
+                                    'custbody_attempted_delivery',
+                                    'custbody_dock_fee',
+                                    'custbody_warehouse_pick_and_pack',
+                                    'custbody_storage_at_destination',
+                                    'custbody_government_duties_and_taxes',
+                                    'custbody_sr_total',
+                                    'custbody_external_notes',
+                                    'custbody_detention_of_trailers',
+                                    'custbody_permit_escort_charges',
+                                    'custbody_stop_off_charge',
+                                    'custbody_layover_charges_destination',
+                                    'custbody_cancelled_order_origin'
+                                ]
                             });
                             
                             if(soRecField.custbody_freight_rep_hidden){
@@ -1660,6 +1759,49 @@
                                     value: soRecField.custbody_government_duties_and_taxes
                                 });
                             }
+
+                            // accessorial codes
+
+                            if(soRecField.custbody_detention_of_trailers){
+                                sublist.setSublistValue({
+                                    id: 'custpage_detention_of_trailers',
+                                    line: j,
+                                    value: soRecField.custbody_detention_of_trailers
+                                });
+                            }
+
+                            if(soRecField.custbody_permit_escort_charges){
+                                sublist.setSublistValue({
+                                    id: 'custpage_permit_escort_charges',
+                                    line: j,
+                                    value: soRecField.custbody_permit_escort_charges
+                                });
+                            }
+
+                            if(soRecField.custbody_stop_off_charge){
+                                sublist.setSublistValue({
+                                    id: 'custpage_stop_off_charge',
+                                    line: j,
+                                    value: soRecField.custbody_stop_off_charge
+                                });
+                            }
+
+                            if(soRecField.custbody_layover_charges_destination){
+                                sublist.setSublistValue({
+                                    id: 'custpage_layover_charges_destination',
+                                    line: j,
+                                    value: soRecField.custbody_layover_charges_destination
+                                });
+                            }
+                            
+                            if(soRecField.custbody_cancelled_order_origin){
+                                sublist.setSublistValue({
+                                    id: 'custpage_cancelled_order_origin',
+                                    line: j,
+                                    value: soRecField.custbody_cancelled_order_origin
+                                });
+                            }
+
 
                             if(soRecField.custbody_sr_total){
                                 sublist.setSublistValue({
@@ -1991,7 +2133,7 @@
                             });
                         }
 
-						 if(result.customerName){
+						if(result.customerName){
                             sublist.setSublistValue({
                                 id: 'custpage_customer_name',
                                 line: j,
@@ -2473,7 +2615,8 @@
                 })
 
                 //log.debug('params',  entity + ', ' + srIds + ', ' + ShipmentStatus + ', ' +BilltoCode + ', ' + CustomerAccountCode + ',' + HAWB + ',' + Origin + ',' + Destinantion + ',' + PickupDate + ',' +DeliverDate + ',' +HAWBDate + ',' +Handover + ',' +ServiceLevel + ',' +ShipperCompany + ',' +ShipperAddress + ',' + ConsigneeCompany + ',' + ConsigneeAddress + ',' + CommodityType + ',' +Mode + ',' + Zone + ',' + Program + ',' + Distance + ',' + TruckId + ',' + Control + ',' + EquipmentCode + ',' + Status + ',' + PAGE_SIZE)
-                form.addButton({                    id : 'custpage_csv',
+                form.addButton({
+                    id : 'custpage_csv',
                     label : 'Export CSV',
                     functionName : 'exportCSV(' + entity + ', ' + srIds + ', ' + ShipmentStatus + ', ' +BilltoCode + ', ' + CustomerAccountCode + ',' + HAWB + ',' + Origin + ',' + Destinantion + ',' + PickupDate + ',' +DeliverDate + ',' +HAWBDate + ',' +Handover + ',' +ServiceLevel + ',' +ShipperCompany + ',' +ShipperAddress + ',' + ConsigneeCompany + ',' + ConsigneeAddress + ',' + CommodityType + ',' +Mode + ',' + Zone + ',' + Program + ',' + Distance + ',' + TruckId + ',' + Control + ',' + EquipmentCode + ',' + Status + ',' + invdate + ',' + datecreated + ',' +PAGE_SIZE +')'
                 });
@@ -2630,6 +2773,8 @@
                 salesorderSearchColFilter.push(['type', 'anyof', 'SalesOrd'])
                 salesorderSearchColFilter.push('AND')
                 salesorderSearchColFilter.push(['mainline', 'is', 'T'])
+                salesorderSearchColFilter.push('AND')
+                salesorderSearchColFilter.push(['custbody_sr_approvalstatus', 'noneof', '4'])
                 
 
                 if (entity == 18 || entity == null) {

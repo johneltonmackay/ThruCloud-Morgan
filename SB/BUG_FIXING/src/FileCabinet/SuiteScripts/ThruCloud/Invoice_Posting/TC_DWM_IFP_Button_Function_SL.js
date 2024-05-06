@@ -51,6 +51,23 @@
                             log.debug('soId',soId)
                             log.debug('testReady',testReady)
                 
+                            var invFields = search.lookupFields({
+                                type: search.Type.INVOICE,
+                                id: invId,
+                                columns: ['custbody_date_posted_rep_hidden','custbody_inv_approval_status','tranid','createdfrom','custbody_copy_to_edi']
+                            });
+                
+                            log.debug('invFields',invFields)
+                
+                            if(invFields.custbody_inv_approval_status[0].text == "Pending Posting"){
+                                applyInvId.push(invFields.tranid)
+                
+                                if(invFields.custbody_copy_to_edi){
+                                    var testReady = 1; // Ready
+                                }
+                                else{
+                                    var testReady = '';
+                                }
                                 var invRec = record.submitFields({
                                     type: record.Type.INVOICE,
                                     id: invId,
@@ -73,6 +90,11 @@
                                         custbody_inv_posting_date: setPostDate
                                     }
                                 })
+                                else if(invFields.custbody_inv_approval_status[0].text == "Pending Approval"){
+                                    log.debug('else if',invFields.custbody_inv_approval_status)
+                                    applyInvalid.push(invFields.tranid)
+                                }
+                            }
 
                         }
                     }

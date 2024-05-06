@@ -100,7 +100,7 @@
             var OrderType = context.request.parameters.OrderType;
             var Currency = context.request.parameters.Currency;
             var InvoiceUser = context.request.parameters.InvoiceUser;
-           
+                log.debug('HAWB', HAWB)
                 var sublist = form.addSublist({
                 id: 'custpage_invoice_list',
                 type: serverWidget.SublistType.LIST,
@@ -585,8 +585,11 @@
                     }
     
                     if(HAWB){
-                        var HAWBArrSet = HAWB.split(",")
-                        
+                        log.debug('runSearch HAWB', HAWB)
+                        var HAWBArrSet = HAWB.split(",").map(function(item) {
+                            return item.trim();
+                        });
+                        log.debug('runSearch HAWBArrSet', HAWBArrSet)
                         var HAWBArr = [];
                         for(var x = 0; x<HAWBArrSet.length;x++){
                             
@@ -605,7 +608,7 @@
                                 end: 1 // Adjust the number of results you want to fetch
                             });
                             if(searchResults.length == 0){
-                                HAWBArr.push('@NONE@');
+
                             }
                             else{
                                 for (var i = 0; i < searchResults.length; i++) {
@@ -614,6 +617,7 @@
                                 }
                             }
                         }
+                        log.debug('runSearch HAWBArr', HAWBArr)
                         //should have same value pairs from the columns -> to getValue
                         invSearchColFilter.push(search.createFilter({
                             name: 'cseg_hawborig',
