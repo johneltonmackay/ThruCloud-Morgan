@@ -1152,6 +1152,16 @@
                     displayType: serverWidget.FieldDisplayType.ENTRY
                 });
 
+                var fldCB = sublist.addField({
+                    id: 'custpage_border_crossing',
+                    type: serverWidget.FieldType.TEXT,
+                    label: 'Border Crossing'
+                });
+                
+                fldCB.updateDisplayType({
+                    displayType: serverWidget.FieldDisplayType.ENTRY
+                });
+
                 var totalLine = sublist.addField({
                     id: 'custpage_total',
                     type: serverWidget.FieldType.TEXT,
@@ -1444,7 +1454,9 @@
                                     'custbody_permit_escort_charges',
                                     'custbody_stop_off_charge',
                                     'custbody_layover_charges_destination',
-                                    'custbody_cancelled_order_origin'
+                                    'custbody_cancelled_order_origin',
+                                    'custbody_storage_at_destination',
+                                    'custbody_border_crossing',
                                 ]
                             });
                             
@@ -1744,11 +1756,11 @@
                                 });
                             }
 
-                            if(soRecField.custbody_dock_fee){
+                            if(soRecField.custbody_storage_at_destination){
                                 sublist.setSublistValue({
                                     id: 'custpage_storage_dest',
                                     line: j,
-                                    value: soRecField.custbody_dock_fee
+                                    value: soRecField.custbody_storage_at_destination
                                 });
                             }
 
@@ -1799,6 +1811,14 @@
                                     id: 'custpage_cancelled_order_origin',
                                     line: j,
                                     value: soRecField.custbody_cancelled_order_origin
+                                });
+                            }
+
+                            if(soRecField.custbody_border_crossing){
+                                sublist.setSublistValue({
+                                    id: 'custpage_border_crossing',
+                                    line: j,
+                                    value: soRecField.custbody_border_crossing
                                 });
                             }
 

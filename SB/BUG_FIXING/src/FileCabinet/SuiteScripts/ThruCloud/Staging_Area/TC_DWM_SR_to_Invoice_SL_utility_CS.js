@@ -15,7 +15,7 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
         'custpage_attempted_pick_up', 'custpage_hul', 'custpage_hhb', 'custpage_screening', 'custpage_ot_charge', 'custpage_break_bulk_fee', 'custpage_edi_fee',
         'custpage_custom_formalities', 'custpage_stop_fee', 'custpage_bcd', 'custpage_attempted_del', 'custpage_dock_fee', 'custpage_wh_pick_pack', 'custpage_storage_dest',
         'custpage_gov_duty_tax', 'custpage_detention_of_trailers', 'custpage_permit_escort_charges', 'custpage_stop_off_charge', 'custpage_layover_charges_destination',
-        'custpage_cancelled_order_origin'
+        'custpage_cancelled_order_origin', 'custpage_border_crossing'
     ]
 
     function pageInit_sr_to_inv(scriptContext) {
@@ -307,6 +307,12 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                     line: i
                 });
 
+                var ac45 =  currRecObj.getSublistValue({
+                    sublistId: 'custpage_shipment_list',
+                    fieldId: 'custpage_border_crossing',
+                    line: i
+                });
+
                 if(ac1){
                     totalArr.push(ac1)
                 }
@@ -453,7 +459,10 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                 if(ac44){
                     totalArr.push(ac44)
                 }
-
+                if(ac45){
+                    totalArr.push(ac45)
+                }
+                
                 var totalAC = 0;
 
                 for (var k = 0; k < totalArr.length; k++) {
@@ -1091,6 +1100,7 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                 var salesOrderSearchCol318 = search.createColumn({ name: 'custbody_stop_off_charge' });
                 var salesOrderSearchCol319 = search.createColumn({ name: 'custbody_layover_charges_destination' });
                 var salesOrderSearchCol320 = search.createColumn({ name: 'custbody_cancelled_order_origin' });
+                var salesOrderSearchCol321 = search.createColumn({ name: 'custbody_border_crossing' });
                 
                 var salesOrderSearchColTotal = search.createColumn({ name: 'custbody_sr_total' });
                 var salesOrderSearchColInternalBillingNotes = search.createColumn({ name: 'custbody_intnotes' });
@@ -1205,6 +1215,7 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                         salesOrderSearchCol318,
                         salesOrderSearchCol319,
                         salesOrderSearchCol320,
+                        salesOrderSearchCol321,
                         salesOrderSearchColTotal,
                         salesOrderSearchColInternalBillingNotes,
                         salesOrderSearchColExternalNotes,
@@ -1214,7 +1225,7 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                     ],
                 });
 
-                var csvContent = "INVOICE,OWNED BY,SHIPMENT RECORD STATUS,STANDARD STATUS,SHIPMENT STATUS,BILL TO ACCOUNT,HAWB,HAND OVER,ORIGIN,DESTINATION,HAWB DATE,PICK UP DATE,DELIVERY DATE,PICK UP TIME,DELIVERY TIME,PICK UP WAIT TIME(MINS),DELIVERY WAIT TIME (MINS),SERVICE LEVEL,PIECES,ACTUAL WEIGHT,DIM WEIGHT,WEIGHT UOM,DIM FACT,DEPARTMENT,MAIN SHIPPER COMPANY NAME,SHIPPER COMPANY,SHIPPER ADDRESS,SHIPPER CITY TOWN,SHIPPER STATE REGION PROVINCE,SHIPPER POSTAL CODE,SHIPPER COUNTRY,SHIPPER AIRPORT CODE,MAIN CONSIGNEE COMPANY NAME,CONSIGNEE COMPANY,CONSIGNEE ADDRESS,CONSIGNEE CITY TOWN,CONSIGNEE STATE REGION PROVINCE,CONSIGNEE POSTAL CODE,CONSIGNEE COUNTRY,CONSIGNEE AIRPORT CODE,SMK NUMBER,BILL TO NAME,DUE TIME,EQUIPMENT CODE,MAIN MODE,TPT,INTEL SERVICE CODE,SCAC CODE,PAY CODE,CUSTOMER PER ENTITY,COMMODITY TYPE,MODE,DISTANCE(IN MILES),TRUCK ID,TRAILER ID,DRIVER ID,VENDOR NAME 1,VENDOR INVOICE COST 1,VENDOR NAME 2,VENDOR INVOICE COST 2,VENDOR NAME 3,VENDOR INVOICE COST 3,VENDOR NAME 4,VENDOR INVOICE COST 4,VENDOR NAME 5,VENDOR INVOICE COST 5,FREIGHT,DISCOUNT,FUEL,WAIT TIME PICK UP,WAIT TIME DELIVERY,SAME DAY DELIVERY,AFTER HOURS PICK UP,AFTER HOURS DELIVERY,STORAGE,ADDITIONAL MANPOWER,SMART PALLET,CFC,FAG,WEEKEND OR HOLIDAY DELIVERY,SPECIAL,HANDLING,SPECIAL HANDLING,HAZARDOUS CARGO HANDLING CHARGE AT ORIGIN,LAYOVER FEE,WEEKEND PICKUP/DLVY,DETENTION CHARGE,VEHICLE WAITING TIME AT ORIGIN,VEHICLE WAITING TIME AT DESTINATION,TRUCK ORDER NOT USED,ATTEMPTED PICK UP,LIFTGATE OR FORKLIFT SERVICE,Brokerage Country Specific Govt Fees,Screening,Overtime Charges,Break Bulk Fee,Edi Fee,Customs Formalities,Stop Fee,Brokerage Customs and Duties,Attempted Delivery,Dock Fee,Warehouse Pick and Pack,Storage at Destination,Government Duties and Taxes,Detention of Trailers,Permit/Escort charges,Stop Off Charge,Layover Charges Destination,Cancelled Order Origin,TOTAL CHARGES,INTERNAL BILLING NOTES,EXTERNAL NOTES,DOCUMENT NUMBER #,INVOICE POST DATE,CREATED DATE AND TIME \n";
+                var csvContent = "INVOICE,OWNED BY,SHIPMENT RECORD STATUS,STANDARD STATUS,SHIPMENT STATUS,BILL TO ACCOUNT,HAWB,HAND OVER,ORIGIN,DESTINATION,HAWB DATE,PICK UP DATE,DELIVERY DATE,PICK UP TIME,DELIVERY TIME,PICK UP WAIT TIME(MINS),DELIVERY WAIT TIME (MINS),SERVICE LEVEL,PIECES,ACTUAL WEIGHT,DIM WEIGHT,WEIGHT UOM,DIM FACT,DEPARTMENT,MAIN SHIPPER COMPANY NAME,SHIPPER COMPANY,SHIPPER ADDRESS,SHIPPER CITY TOWN,SHIPPER STATE REGION PROVINCE,SHIPPER POSTAL CODE,SHIPPER COUNTRY,SHIPPER AIRPORT CODE,MAIN CONSIGNEE COMPANY NAME,CONSIGNEE COMPANY,CONSIGNEE ADDRESS,CONSIGNEE CITY TOWN,CONSIGNEE STATE REGION PROVINCE,CONSIGNEE POSTAL CODE,CONSIGNEE COUNTRY,CONSIGNEE AIRPORT CODE,SMK NUMBER,BILL TO NAME,DUE TIME,EQUIPMENT CODE,MAIN MODE,TPT,INTEL SERVICE CODE,SCAC CODE,PAY CODE,CUSTOMER PER ENTITY,COMMODITY TYPE,MODE,DISTANCE(IN MILES),TRUCK ID,TRAILER ID,DRIVER ID,VENDOR NAME 1,VENDOR INVOICE COST 1,VENDOR NAME 2,VENDOR INVOICE COST 2,VENDOR NAME 3,VENDOR INVOICE COST 3,VENDOR NAME 4,VENDOR INVOICE COST 4,VENDOR NAME 5,VENDOR INVOICE COST 5,FREIGHT,DISCOUNT,FUEL,WAIT TIME PICK UP,WAIT TIME DELIVERY,SAME DAY DELIVERY,AFTER HOURS PICK UP,AFTER HOURS DELIVERY,STORAGE,ADDITIONAL MANPOWER,SMART PALLET,CFC,FAG,WEEKEND OR HOLIDAY DELIVERY,SPECIAL,HANDLING,SPECIAL HANDLING,HAZARDOUS CARGO HANDLING CHARGE AT ORIGIN,LAYOVER FEE,WEEKEND PICKUP/DLVY,DETENTION CHARGE,VEHICLE WAITING TIME AT ORIGIN,VEHICLE WAITING TIME AT DESTINATION,TRUCK ORDER NOT USED,ATTEMPTED PICK UP,LIFTGATE OR FORKLIFT SERVICE,Brokerage Country Specific Govt Fees,Screening,Overtime Charges,Break Bulk Fee,Edi Fee,Customs Formalities,Stop Fee,Brokerage Customs and Duties,Attempted Delivery,Dock Fee,Warehouse Pick and Pack,Storage at Destination,Government Duties and Taxes,Detention of Trailers,Permit/Escort charges,Stop Off Charge,Layover Charges Destination,Cancelled Order Origin,Border Crossing, TOTAL CHARGES,INTERNAL BILLING NOTES,EXTERNAL NOTES,DOCUMENT NUMBER #,INVOICE POST DATE,CREATED DATE AND TIME \n";
                 
                 console.log(csvContent);
                 
@@ -1585,6 +1596,11 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                             totalArr.push(column120Value)
                         }
 
+                        var column121Value = result.getValue(salesOrderSearchCol321);
+                        if(column121Value){
+                            totalArr.push(column121Value)
+                        }
+
                         var columnTotalValue = 0;
 
                         for (var k = 0; k < totalArr.length; k++) {
@@ -1600,7 +1616,7 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
                         var column110Value = result.getValue(salesOrderSearchColCreatedDateAndTime);
 
                         // ...
-                        csvContent += column1Value + ',' + column2Value + ',' + column3Value + ',' + column4Value + ',' + column5Value + ',' + column6Value + ',' + column7Value + ',' + column8Value + ',' + column9Value + ','+ column10Value + ',' + column11Value + ',' + column12Value +','+ column13Value + ',' + column14Value + ',' + column15Value + ',' + column16Value + ',' + column17Value + ',' + column18Value +','+  column19Value + ',' + column20Value + ',' + column21Value +','+  column22Value + ',' + column23Value + ',' + column24Value +',' + column25Value + ',' + column26Value + ',' + column27Value + ',' + column28Value + ',' + column29Value + ',' + column30Value +','+ column31Value + ',' + column32Value + ',' + column33Value +','+ column34Value + ',' + column35Value + ',' + column36Value +','+ column37Value + ',' + column38Value + ',' + column39Value + ',' + column40Value + ',' + column41Value + ',' + column42Value +','+  column43Value + ',' + column44Value + ',' + column45Value + ',' + column46Value +','+ column47Value + ',' + column48Value + ',' + column49Value + ',' + column50Value + ',' + column51Value + ',' + column52Value + ',' + column53Value +','+ column54Value + ',' + column55Value + ',' + column56Value +','+ vendorNameArr[0] + ',' + vendorBCostArr[0] + ',' + vendorNameArr[1] + ',' + vendorBCostArr[1] + ',' + vendorNameArr[2] + ',' + vendorBCostArr[2] +','+  vendorNameArr[3] + ',' + vendorBCostArr[3] + ',' + vendorNameArr[4] +','+  vendorBCostArr[4] + ',' + column67Value + ',' + column68Value + ',' + column69Value + ',' + column70Value + ',' + column71Value + ',' + column72Value + ',' + column73Value + ',' + column74Value +','+ column75Value + ',' + column76Value + ',' + column77Value +','+ column78Value + ',' + column79Value + ',' + column80Value +','+ column81Value + ',' + column82Value +','+ column83Value + ',' + column84Value + ',' + column85Value +','+ column86Value + ',' + column87Value + ',' + column88Value +','+ column89Value + ',' + column90Value +','+ column91Value + ',' + column92Value +','+ column93Value + ',' + column94Value + ',' + column95Value +','+ column96Value + ',' + column97Value +','+ column98Value + ',' + column99Value +',' + column100Value + ',' + column101Value + ',' + column102Value +','+ column103Value + ',' + column104Value + ',' + column105Value + ',' + column116Value + ',' + column117Value + ',' + column118Value +','+ column119Value + ',' + column120Value +',' + columnTotalValue + ',' + column106Value + ',' + column107Value + ',' + column108Value +',' +column109Value + ',' + column110Value +'\n';
+                        csvContent += column1Value + ',' + column2Value + ',' + column3Value + ',' + column4Value + ',' + column5Value + ',' + column6Value + ',' + column7Value + ',' + column8Value + ',' + column9Value + ','+ column10Value + ',' + column11Value + ',' + column12Value +','+ column13Value + ',' + column14Value + ',' + column15Value + ',' + column16Value + ',' + column17Value + ',' + column18Value +','+  column19Value + ',' + column20Value + ',' + column21Value +','+  column22Value + ',' + column23Value + ',' + column24Value +',' + column25Value + ',' + column26Value + ',' + column27Value + ',' + column28Value + ',' + column29Value + ',' + column30Value +','+ column31Value + ',' + column32Value + ',' + column33Value +','+ column34Value + ',' + column35Value + ',' + column36Value +','+ column37Value + ',' + column38Value + ',' + column39Value + ',' + column40Value + ',' + column41Value + ',' + column42Value +','+  column43Value + ',' + column44Value + ',' + column45Value + ',' + column46Value +','+ column47Value + ',' + column48Value + ',' + column49Value + ',' + column50Value + ',' + column51Value + ',' + column52Value + ',' + column53Value +','+ column54Value + ',' + column55Value + ',' + column56Value +','+ vendorNameArr[0] + ',' + vendorBCostArr[0] + ',' + vendorNameArr[1] + ',' + vendorBCostArr[1] + ',' + vendorNameArr[2] + ',' + vendorBCostArr[2] +','+  vendorNameArr[3] + ',' + vendorBCostArr[3] + ',' + vendorNameArr[4] +','+  vendorBCostArr[4] + ',' + column67Value + ',' + column68Value + ',' + column69Value + ',' + column70Value + ',' + column71Value + ',' + column72Value + ',' + column73Value + ',' + column74Value +','+ column75Value + ',' + column76Value + ',' + column77Value +','+ column78Value + ',' + column79Value + ',' + column80Value +','+ column81Value + ',' + column82Value +','+ column83Value + ',' + column84Value + ',' + column85Value +','+ column86Value + ',' + column87Value + ',' + column88Value +','+ column89Value + ',' + column90Value +','+ column91Value + ',' + column92Value +','+ column93Value + ',' + column94Value + ',' + column95Value +','+ column96Value + ',' + column97Value +','+ column98Value + ',' + column99Value +',' + column100Value + ',' + column101Value + ',' + column102Value +','+ column103Value + ',' + column104Value + ',' + column105Value + ',' + column116Value + ',' + column117Value + ',' + column118Value +','+ column119Value + ',' + column120Value + ',' + column121Value +',' + columnTotalValue + ',' + column106Value + ',' + column107Value + ',' + column108Value +',' +column109Value + ',' + column110Value +'\n';
                             
                     })
                 }
@@ -2457,7 +2473,7 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
             'custpage_bcd', 'custpage_attempted_del', 'custpage_dock_fee', 'custpage_wh_pick_pack',
             'custpage_storage_dest', 'custpage_gov_duty_tax', 'custpage_detention_of_trailers',
             'custpage_permit_escort_charges', 'custpage_stop_off_charge', 'custpage_layover_charges_destination',
-            'custpage_cancelled_order_origin'
+            'custpage_cancelled_order_origin', 'custpage_border_crossing'
         ];
     
         const totalArr = fields.map(field => currRecObj.getSublistValue({
@@ -2505,6 +2521,9 @@ function(runtime, currentRecord, search, record, url, dialog, format, https) {
     const getRecFieldId = (currFieldId) => {
         let keyField = ""
         switch (currFieldId) {
+            case "custpage_border_crossing":
+                keyField = 'custbody_border_crossing'
+                break;
             case "custpage_cancelled_order_origin":
                 keyField = 'custbody_cancelled_order_origin'
                 break;

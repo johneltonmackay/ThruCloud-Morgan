@@ -79,7 +79,8 @@ define(['N/record','N/search', 'N/ui/serverWidget', 'N/url', 'N/redirect', 'N/fo
                         'custbody_permit_escort_charges',
                         'custbody_stop_off_charge',
                         'custbody_layover_charges_destination',
-                        'custbody_cancelled_order_origin'
+                        'custbody_cancelled_order_origin',
+                        'custbody_border_crossing',
                     ]
                     });         
         
@@ -150,6 +151,7 @@ define(['N/record','N/search', 'N/ui/serverWidget', 'N/url', 'N/redirect', 'N/fo
                                 custbody_detention_of_trailers : srRec.custbody_detention_of_trailers,
                                 custbody_permit_escort_charges : srRec.custbody_permit_escort_charges,
                                 custbody_stop_off_charge : srRec.custbody_stop_off_charge,
+                                custbody_border_crossing : srRec.custbody_border_crossing,
                                 custbody_layover_charges_destination : srRec.custbody_layover_charges_destination,
                                 custbody_cancelled_order_origin : srRec.custbody_cancelled_order_origin,
                             }
@@ -1255,43 +1257,17 @@ define(['N/record','N/search', 'N/ui/serverWidget', 'N/url', 'N/redirect', 'N/fo
                                     totalArr.push(sameDayDelVal)
                                         //After Hours Pick up
                                         var pickupTime =  srRec.custbody_pickuptime;
-                                        //log.debug('pickupTime',pickupTime)
+                                        log.debug('pickupTime',pickupTime)
+                                        log.debug('AHPUFieldArr',AHPUFieldArr)
                                         if(AHPUFieldArr.length == 0)var AHPUVal = 0;
                                         else{
                                             log.debug('else','else')
                                             if(AHPUFieldArr[0].outcal == 1){
-                                               // log.debug('if',AHPUFieldArr[0].outcal)
-                                                var tensDigit = Math.floor(AHPUFieldArr[0].calendar / 10);
-                                                var onesDigit = (AHPUFieldArr[0].calendar % 10) + 12;
-                                               // log.debug('tensDigit',tensDigit)
-                                               // log.debug('onesDigit',onesDigit)
-                                                var ahpickupTimeOnly = pickupTime.substring(0, 5);
-                                               // log.debug('ahpickupTimeOnly',ahpickupTimeOnly)
-                                                var timeArrAHPU = ahpickupTimeOnly.split(':')
-                                                //log.debug('timeArrAHPU',timeArrAHPU)
-                                                if(timeArrAHPU[0] == '10' || timeArrAHPU[0] == '11' || timeArrAHPU[0] == '12' || timeArrAHPU[0] == '00'){
-                                                    var ampm = pickupTime.substring(6, 8);
-                                                   // log.debug('if ampm',ampm)
-                                                }
-                                                else{
-                                                    var ampm = pickupTime.substring(5, 7);
-                                                    //log.debug('else ampm',ampm)
-                                                }
-
-                                                if(ampm == 'am'){
-                                                    var hourAHPU = parseInt(timeArrAHPU[0]);
-                                                }
-                                                else if(ampm == 'pm'){
-                                                    var hourAHPU = parseInt(timeArrAHPU[0])+12;
-                                                }
-                                               // log.debug('hourAHPU',hourAHPU)
-                                                if(tensDigit <= hourAHPU && (hourAHPU < onesDigit || (hourAHPU == onesDigit && timeArrAHPU[1] == '00'))){
-                                                    var AHPUVal = 0;
-                                                   // log.debug('AHPUVal if',AHPUVal)
-                                                }
-                                                else{
+                                                let isCharge = isChargeableTime(pickupTime)
+                                                if (isCharge){
                                                     var AHPUVal = AHPUFieldArr[0].bp;
-                                                   // log.debug('AHPUVal else',AHPUVal)
+                                                } else {
+                                                    var AHPUVal = 0;
                                                 }
                                             }
                                             else{
@@ -1310,39 +1286,12 @@ define(['N/record','N/search', 'N/ui/serverWidget', 'N/url', 'N/redirect', 'N/fo
                                         else{
                                             log.debug('else',AHDelFieldArr.length)
                                             if(AHDelFieldArr[0].outcal == 1){
-                                                var tensDigitAHDel = Math.floor(AHDelFieldArr[0].calendar / 10);
-                                                var onesDigitAhDel = (AHDelFieldArr[0].calendar % 10) + 12;
-                                                log.debug('tensDigit',tensDigit)
-                                                log.debug('onesDigit',onesDigit)
-                                                var ahDelTimeOnly = AHDeliveryTime.substring(0, 5);
-                                                log.debug('ahDelTimeOnly',ahDelTimeOnly)
-                                                var timeArrAHDel = ahDelTimeOnly.split(':')
-                                                log.debug('timeArrAHDel',timeArrAHDel)
-                                                if(timeArrAHDel[0] == '10' || timeArrAHDel[0] == '11' || timeArrAHDel[0] == '12' || timeArrAHDel[0] == '00'){
-                                                    var ampm = AHDeliveryTime.substring(6, 8);
-                                                    log.debug('if ampm',ampm)
-                                                }
-                                                else{
-                                                    var ampm = AHDeliveryTime.substring(5, 7);
-                                                    log.debug('else ampm',ampm)
-                                                }
-                                                
-                                               
-                                                if(ampm == 'am'){
-                                                    var hourAHDel = parseInt(timeArrAHDel[0]);
-                                                }
-                                                else if(ampm == 'pm'){
-                                                    var hourAHDel = parseInt(timeArrAHDel[0])+12;
-                                                }
-                                                log.debug('hourAHDel',hourAHDel)
-                                            
-                                                if(tensDigitAHDel <= hourAHDel && (hourAHDel < onesDigitAhDel || (hourAHDel == onesDigitAhDel && timeArrAHDel[1] == '00'))){
-                                                    var AHDelVal = 0;
-                                                    log.debug(' if AHDelVal',AHDelVal)
-                                                }
-                                                else{
+                                                let isCharge = isChargeableTime(AHDeliveryTime)
+                                                if (isCharge){
                                                     var AHDelVal = AHDelFieldArr[0].bp;
-                                                    log.debug(' else AHDelVal',AHDelVal)
+                                                } else {
+                                                    var AHDelVal = 0;
+
                                                 }
                                             }
                                             else{
@@ -1787,6 +1736,44 @@ define(['N/record','N/search', 'N/ui/serverWidget', 'N/url', 'N/redirect', 'N/fo
             salesRep = true;
         }
 
+        function isChargeableTime(deliveryTime) {
+            const timeComponents = deliveryTime.split(':');
+            const deliveryHour = parseInt(timeComponents[0]);
+            const deliveryMinute = parseInt(timeComponents[1]);
+            const deliveryPeriod = deliveryTime.slice(-2); 
+            log.debug('isChargeableTime: deliveryMinute', deliveryMinute);
+            log.debug('isChargeableTime: deliveryPeriod', deliveryPeriod);
+        
+            let isChargeable = "";
+        
+            // Convert delivery time to 24-hour format
+            let hour24 = deliveryPeriod.toLowerCase() === 'pm' && deliveryHour !== 12 ? deliveryHour + 12 : deliveryHour;
+            hour24 = hour24 === 12 ? 0 : hour24; // For 12 AM
+            log.debug('isChargeableTime: hour24', hour24);
+            let isPM = deliveryPeriod.toLowerCase() === 'pm' ? true : false;
+            log.debug('isChargeableTime: isPM', isPM);
+            // Check if the time is between 6:01 PM to 7:59 AM
+            if (isPM) {
+                if (hour24 > 18 && hour24 < 24) {
+                    isChargeable = true;
+                } else if (hour24 == 18 && deliveryMinute > 0){
+                    isChargeable = true;
+                } else {
+                    isChargeable = false;
+                }
+            } else {
+                if (hour24 < 8) {
+                    isChargeable = true;
+                } else {
+                    isChargeable = false;
+                }
+            }
+        
+            log.debug('isChargeableTime: input Time', deliveryTime)
+            log.debug('isChargeableTime: isChargeable', isChargeable)
+        
+            return isChargeable;
+        }
         
         return salesRep
         }
