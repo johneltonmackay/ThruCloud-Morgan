@@ -22,12 +22,12 @@
 
             EntityF.addSelectOption({
                 value : '18',
-                text : 'Holding Company (Dummy) : DW Morgan Group : DW Morgan, LLC'
+                text : 'Holding Company : DW Morgan Group : DW Morgan, LLC'
             });
             
             EntityF.addSelectOption({
                 value : '20',
-                text : 'Holding Company (Dummy) : DW Morgan Group : Morgan Global Logistics Pte. Ltd.'
+                text : 'Holding Company : DW Morgan Group : Morgan Global Logistics Pte. Ltd.'
             });
 
             var soBodyfield = form.addField({
@@ -343,6 +343,12 @@
                     id: 'custpage_status',
                     type: serverWidget.FieldType.TEXT,
                     label: 'Shipment Status'
+                });
+
+                sublist.addField({
+                    id: 'custpage_smk_number',
+                    type: serverWidget.FieldType.TEXT,
+                    label: 'SMK Number'
                 });
 
                 sublist.addField({
@@ -1888,6 +1894,14 @@
                                 id: 'custpage_status',
                                 line: j,
                                 value: result.status
+                            });
+                        }
+
+                        if(result.smk_number){
+                            sublist.setSublistValue({
+                                id: 'custpage_smk_number',
+                                line: j,
+                                value: result.smk_number
                             });
                         }
 
@@ -3806,6 +3820,7 @@
                 var salesorderSearchColIntelService = result.getValue({ name: 'custbody_intel_sc' });
                 var salesorderSearchColSCACCode = result.getValue({ name: 'custbody_scac_code' });
                 var salesorderSearchColTotal = result.getValue({ name: 'custbody_sr_total' });
+                var smk_number = result.getValue({ name: 'custbody_smk_number' });
                 srResults.push({
                     "id": internalId,
                     "customerperentity": salesorderSearchColCustomer,
@@ -3814,6 +3829,7 @@
                      "ownedId": salesorderSearchColOwnedId,
                      "freight": salesorderSearchColFreight,
 					 "status": salesorderSearchColStatus,
+                     "smk_number": smk_number,
                      "srstatus": salesorderSearchBodyStatus,
                      "sstatus": salesorderSearchSStatus,
 					 "billAcc": salesorderSearchColBillToAccount, 

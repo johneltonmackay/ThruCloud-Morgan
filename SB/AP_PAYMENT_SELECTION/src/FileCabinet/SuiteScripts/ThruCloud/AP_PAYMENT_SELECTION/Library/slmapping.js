@@ -16,24 +16,27 @@ define([],
                         type: "SELECT",
                         label: "Entity",
                         source: 'subsidiary',
-                        // hasoption: true,
+                        ishidden: false,
                     },
                     THIS_WEEK_GRAND_TOTAL: {
                         id: "custpage_thisweek_amt_g",
                         type: "TEXT",
                         label: "THIS WEEK GRAND TOTAL",
+                        ishidden: false,
                         hasdefault: true,
                     },
                     NEXT_WEEK_GRAND_TOTAL: {
                         id: "custpage_nextweek_amt_g",
                         type: "TEXT",
                         label: "NEXT WEEK GRAND TOTAL",
+                        ishidden: true,
                         hasdefault: true,
                     },
                     ENTITY: {
                         id: "custpage_vendors_body",
                         type: "MULTISELECT",
                         label: "Selected Vendor",
+                        ishidden: false,
                         hasoption: true,
                     },
                 },
@@ -46,7 +49,7 @@ define([],
                     APPROVE_ALL: {
                         label: 'Approve All Vendor Invoice',
                         id: 'custpage_approve_all_vendor',
-                        // functionName: 'searchItems'
+                        functionName: 'approveVendors'
                     },
                 },
                 sublistfields: {
@@ -74,6 +77,7 @@ define([],
                         id: "custpage_postingperiod_head",
                         label: "Posting Period",
                         type: "TEXT",
+                        isrolehidden: true,
                     },
                     DOCUMENT_NUMBER: {
                         id: "custpage_document_number_head", 
@@ -104,6 +108,7 @@ define([],
                         id: "custpage_exchange_rate_head",
                         label: "Exchange Rate",
                         type: "TEXT",
+                        isrolehidden: true,
                     },
                     THIS_WEEK: {
                         id: "custpage_this_week",
@@ -119,11 +124,13 @@ define([],
                         id: "custpage_next_week",
                         label: "Next Week",
                         type: "CHECKBOX",
+                        isrolehidden: true,
                     },
                     NEXT_WEEK_AMOUNT: {
                         id: "custpage_next_week_amount",
                         label: "Next Week Amount",
                         type: "TEXT",
+                        isrolehidden: true,
                     },
                     MEMO: {
                         id: "custpage_memo",
@@ -139,6 +146,7 @@ define([],
                         id: "custpage_age_days_head",
                         label: "Age in Days",
                         type: "TEXT",
+                        isrolehidden: true,
                     },
                     CURRENT: {
                         id: "custpage_current_head",
@@ -176,7 +184,18 @@ define([],
                         type: "TEXT",
                         ishidden: true
                     },
-                    
+                    REC_TYPE: {
+                        id: "custpage_rec_type",
+                        label: "RECORD TYPE",
+                        type: "TEXT",
+                        ishidden: true
+                    },
+                    LINE_KEY: {
+                        id: "custpage_lineuniquekey",
+                        label: "LINE KEY",
+                        type: "TEXT",
+                        // ishidden: true
+                    },
                 },
                 selectOptions: {
                     DW_MORGAN: {

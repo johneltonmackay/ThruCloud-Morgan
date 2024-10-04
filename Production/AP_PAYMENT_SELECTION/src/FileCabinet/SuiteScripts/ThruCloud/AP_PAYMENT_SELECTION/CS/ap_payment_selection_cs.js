@@ -47,6 +47,29 @@ define(['N/ui/message', 'N/search', 'N/currentRecord', 'N/format', '../Library/s
                         })
                     }
 
+                    // var numLines = currRecObj.getLineCount({
+                    //     sublistId: 'custpage_sublist',
+                    // });
+                    // for(var x = 0; x < numLines; x++){
+                    //     var styleField = currRecObj.getSublistValue({
+                    //         sublistId: 'custpage_sublist',
+                    //         fieldId: 'custpage_style_on',
+                    //         line: x
+                    //     });
+                    //     console.log('styleField', styleField)
+                    //     if (styleField == '<b>true</b>'){
+                    //         let arrChkBoxFields = ['custpage_this_week', 'custpage_next_week', 'custpage_approveforpayment']
+                    //         arrChkBoxFields.forEach(fieldId => {
+                    //             var chkBoxField = currRecObj.getSublistField({
+                    //                 sublistId: 'custpage_sublist',
+                    //                 fieldId: fieldId,
+                    //                 line: x
+                    //             });
+                    //             chkBoxField.isDisabled = true;
+                    //         });
+                    //     }
+                    // }
+
                 } else {
                     showMessage()
 

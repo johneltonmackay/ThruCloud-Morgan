@@ -16,7 +16,11 @@ define(["N/ui/serverWidget", "N/search", "N/format", "N/file", "N/record", "../L
             'custpage_31_to_60_head',
             'custpage_61_to_90_head',
             'custpage_over_90_head',
-            'custpage_total_amount_head'
+            'custpage_total_amount_head',
+            'custpage_exchange_rate_head',
+            'custpage_fxamount',
+            'custpage_next_week_amount',
+            'custpage_this_week_amount'
         ];
         //#global functions
         FORM.buildForm = (options) => {
@@ -147,7 +151,17 @@ define(["N/ui/serverWidget", "N/search", "N/format", "N/file", "N/record", "../L
 					tab: 'custpage_tabid'
                 });
                 for (var strKey in slMapping.SUITELET.form.sublistfields) {
+
                     sublist.addField(slMapping.SUITELET.form.sublistfields[strKey]);
+
+                    if (slMapping.SUITELET.form.sublistfields[strKey].ishidden) {
+                        var objField = sublist.getField({
+                            id: slMapping.SUITELET.form.sublistfields[strKey].id,
+                        });
+                        objField.updateDisplayType({
+                            displayType: serverWidget.FieldDisplayType.HIDDEN
+                        });
+                    }
                 }
 
                 if (arrParam) {
@@ -156,12 +170,16 @@ define(["N/ui/serverWidget", "N/search", "N/format", "N/file", "N/record", "../L
                     let GT61To90 = 0
                     let GTOver90 = 0
                     let GTAmount = 0
-                    let lineCount = 0
+                    let arrAdditionalLines = []
+                    let arrMainLines = []
+                    let arrMergeLines = []
                     arrParam.forEach((item, index) => {
-                        let counter = 0
-                        let arrAdditionalLines = []
-                        let { custpage_1_to_30_head, custpage_31_to_60_head, custpage_61_to_90_head, custpage_over_90_head, custpage_total_amount_head, data: arrData } = item;
-                        
+                        let arrData = item.data
+                        let { custpage_1_to_30_head, custpage_31_to_60_head, custpage_61_to_90_head, custpage_over_90_head, custpage_total_amount_head } = item;
+
+                        item.custpage_style_on = true,
+                        arrMainLines.push(item)
+
                         let parsedInt1To30 = parseFloat(custpage_1_to_30_head);
                         let parsedInt31To60 = parseFloat(custpage_31_to_60_head);
                         let parsedInt61To90 = parseFloat(custpage_61_to_90_head);
@@ -183,66 +201,67 @@ define(["N/ui/serverWidget", "N/search", "N/format", "N/file", "N/record", "../L
                         if (parsedIntTotalAmount > 0) {
                             GTAmount += parsedIntTotalAmount;
                         }
-                        // log.debug('addSublistFields item', item);
 
                         arrData.forEach((element, line) => {
                             let vendorId = element.custpage_entity_head
                             if (arrVendor.length > 0){
                                 if (arrVendor.includes(vendorId)){
+                                    if (element.hasOwnProperty('custpage_fxamount')) {
+                                        element.custpage_amount_head = parseFloat(element.custpage_fxamount);
+                                    }
                                     arrAdditionalLines.push(element)
                                 }
                             }
                         });
 
-                        arrAdditionalLines.forEach((additional, line) => {
-                            log.debug('addSublistFields additional', additional);
-                            lineCount = arrAdditionalLines.length
-                            for (const fieldId in additional) {
-                                if (validateKeys(fieldId)) {
-                                    let addValue = additional[fieldId];
-                                    if (addValue || addValue === 0) {
-                                        if (ARRFIELDTOFORMAT.includes(fieldId)) {
-                                            addValue = floatToCurrency(addValue.toFixed(2));
-                                        }
+                    });
+
+                    let objGrandTotal = {
+                        custpage_style_on: true,
+                        custpage_currency_head: '<b> Grand Total </b>',
+                        custpage_1_to_30_head: GT1To30,
+                        custpage_31_to_60_head: GT31To60,
+                        custpage_61_to_90_head: GT61To90,
+                        custpage_over_90_head: GTOver90, 
+                        custpage_total_amount_head: GTAmount
+                    }
+
+                    
+                    arrMergeLines = [...arrAdditionalLines, ...arrMainLines];
+
+                    arrMergeLines.push(objGrandTotal)
+
+                    log.debug('arrMergeLines', arrMergeLines)
+
+                    arrMergeLines.forEach((data, line) => {
+                        for (const fieldId in data) {
+                            if (validateKeys(fieldId)) {
+                                let value = data[fieldId];
+                                if (value || value === 0) {
+                                    if (ARRFIELDTOFORMAT.includes(fieldId)) {
+                                        value = floatToCurrency(value.toFixed(2));
+                                    }
+                                    if (data.hasOwnProperty('custpage_style_on')) {
                                         sublist.setSublistValue({
                                             id: fieldId,
                                             line: line,
-                                            value: addValue,
+                                            value: '<b>' + value +  '</b>',
+                                        });
+                                        
+                                    } else {
+                                        value = (value === true) ? 'T' : (value === false) ? 'F' : value;
+
+                                        sublist.setSublistValue({
+                                            id: fieldId,
+                                            line: line,
+                                            value: value,
                                         });
                                     }
                                 }
                             }
-                        });
-                        log.debug('addSublistFields lineCount', lineCount);
-                        for (const key in item) {
-                            if (validateKeys(key)) {
-                                let value = item[key];
-                                if (value || value === 0) {
-                                    if (ARRFIELDTOFORMAT.includes(key)) {
-                                        value = floatToCurrency(value.toFixed(2));
-                                    }
-                                    sublist.setSublistValue({
-                                        id: key,
-                                        line: lineCount + index,
-                                        value: '<b>' + value + '</b>',
-                                    });
-                                }
-                            }
                         }
-
-                        // log.debug('addSublistFields arrData', arrData);
-
-                        // log.debug('counter', counter)
                     });
 
-                    
-                    // Grand Total
-                    // fnSetSublistValue('custpage_currency_head', 'Grand Total', sublist, arrParam);
-                    // fnSetSublistValue('custpage_1_to_30_head', floatToCurrency(GT1To30.toFixed(2)), sublist, arrParam);
-                    // fnSetSublistValue('custpage_31_to_60_head', floatToCurrency(GT31To60.toFixed(2)), sublist, arrParam);
-                    // fnSetSublistValue('custpage_61_to_90_head', floatToCurrency(GT61To90.toFixed(2)), sublist, arrParam);
-                    // fnSetSublistValue('custpage_over_90_head', floatToCurrency(GTOver90.toFixed(2)), sublist, arrParam);
-                    // fnSetSublistValue('custpage_total_amount_head', floatToCurrency(GTAmount.toFixed(2)), sublist, arrParam);
                 }
                 
             } catch (err) {
@@ -257,13 +276,17 @@ define(["N/ui/serverWidget", "N/search", "N/format", "N/file", "N/record", "../L
                 let entityDataMap = {};
         
                 let filters = [
-                    ['type', 'anyof', 'VendPymt', 'VendCred', 'VendBill', 'Journal', 'ExpRept'],
+                    ['type', 'anyof', 'VendCred', 'VendBill', 'Journal', 'ExpRept'],
                     'AND',
                     ['mainline', 'is', 'T'],
                     'AND',
                     ['accounttype', 'anyof', 'AcctPay'],
                     'AND',
                     ['subsidiary', 'anyof', arrParam.entity],
+                    'AND',
+                    ['custbody_propose_for_approval', 'is', 'T'],
+                    'AND',
+                    ['custbody_approve_for_payment', 'is', 'F'],
                 ];
         
                 log.debug('filters', filters);
@@ -272,10 +295,11 @@ define(["N/ui/serverWidget", "N/search", "N/format", "N/file", "N/record", "../L
                     type: 'transaction',
                     filters: filters,
                     columns: [
+                        search.createColumn({ name: 'internalid', label: 'custpage_id_head' }),
                         search.createColumn({ name: 'trandate', label: 'custpage_date_head' }),
                         search.createColumn({ name: 'custbody_invoice_date', label: 'custpage_invdate_head' }),
                         search.createColumn({ name: 'postingperiod', label: 'custpage_postingperiod_head' }),
-                        search.createColumn({ name: 'tranid', label: 'custpage_id_head' }),
+                        search.createColumn({ name: 'tranid', label: 'custpage_document_number_head' }),
                         search.createColumn({ name: 'entity', label: 'custpage_entity_head' }),
                         search.createColumn({ name: 'entity', label: 'custpage_entity_text' }),
                         search.createColumn({ name: 'currency', label: 'custpage_currency_head' }),
@@ -286,12 +310,12 @@ define(["N/ui/serverWidget", "N/search", "N/format", "N/file", "N/record", "../L
                         search.createColumn({ name: 'custbody_next_week_amount', label: 'custpage_next_week_amount' }),
                         search.createColumn({ name: 'memo', label: 'custpage_memo' }),
                         search.createColumn({ name: 'custbody_approve_for_payment', label: 'custpage_approve_for_payment' }),
-                        search.createColumn({ name: 'formulanumeric', formula: '{TODAY}-{trandate}', label: 'custpage_formula_today_trandate' }),
-                        search.createColumn({ name: 'formulacurrency', formula: 'case when ({TODAY}-{trandate})<1 then {fxamount} end', label: 'custpage_formula_less_1' }),
-                        search.createColumn({ name: 'formulacurrency', formula: 'case when ({TODAY}-{trandate})between 1 and 30 then {fxamount} end', label: 'custpage_formula_1_3' }),
-                        search.createColumn({ name: 'formulacurrency', formula: 'case when ({TODAY}-{trandate})between 31 and 60 then {fxamount} end', label: 'custpage_formula_31_60' }),
-                        search.createColumn({ name: 'formulacurrency', formula: 'case when ({TODAY}-{trandate})between 61 and 90 then {fxamount} end', label: 'custpage_formula_61_90' }),
-                        search.createColumn({ name: 'formulacurrency', formula: 'case when ({TODAY}-{trandate})>90 then {fxamount} end', label: 'custpage_formula_more_90' }),
+                        search.createColumn({ name: 'formulanumeric', formula: '{TODAY}-{custbody_invoice_date}', label: 'custpage_age_days_head' }),
+                        search.createColumn({ name: 'formulacurrency', formula: 'case when ({TODAY}-{custbody_invoice_date})<1 then {fxamount} end', label: 'custpage_current_head' }),
+                        search.createColumn({ name: 'formulacurrency', formula: 'case when ({TODAY}-{custbody_invoice_date})between 1 and 30 then {fxamount} end', label: 'custpage_1_to_30_head' }),
+                        search.createColumn({ name: 'formulacurrency', formula: 'case when ({TODAY}-{custbody_invoice_date})between 31 and 60 then {fxamount} end', label: 'custpage_31_to_60_head' }),
+                        search.createColumn({ name: 'formulacurrency', formula: 'case when ({TODAY}-{custbody_invoice_date})between 61 and 90 then {fxamount} end', label: 'custpage_61_to_90_head' }),
+                        search.createColumn({ name: 'formulacurrency', formula: 'case when ({TODAY}-{custbody_invoice_date})>90 then {fxamount} end', label: 'custpage_over_90_head' }),
                         search.createColumn({ name: 'fxamount', label: 'custpage_fxamount' }),
                         search.createColumn({ name: 'amount', label: 'custpage_amount' }),
                         search.createColumn({ name: 'duedate', label: 'custpage_duedate_head' }),
@@ -317,31 +341,33 @@ define(["N/ui/serverWidget", "N/search", "N/format", "N/file", "N/record", "../L
                                     let resultLabel = result.label;
                                     if (resultLabel == 'custpage_entity_text') {
                                         objData[resultLabel] = pageData[pageResultIndex].getText(result) ? pageData[pageResultIndex].getText(result) : "-None-";
+                                    } else if (resultLabel == 'custpage_postingperiod_head'){
+                                        objData[resultLabel] = pageData[pageResultIndex].getText(result);
+                                    } else if (resultLabel == 'custpage_currency_head'){
+                                        objData[resultLabel] = pageData[pageResultIndex].getText(result);
+                                    } else if (ARRFIELDTOFORMAT.includes(resultLabel)){
+                                        objData[resultLabel] = parseFloat(pageData[pageResultIndex].getValue(result));
+                                    } else if (resultLabel == 'custpage_age_days_head'){
+                                        objData[resultLabel] = parseInt(Math.floor(pageData[pageResultIndex].getValue(result)));
                                     } else {
                                         objData[resultLabel] = pageData[pageResultIndex].getValue(result);
                                     }
                                 });
 
-                                if(objData.custpage_rec_type == 'Journal' || objData.custpage_rec_type == 'Expense Report'){
-                                    if (objData.custpage_credit_amount){
-                                        objData.custpage_amount = objData.custpage_credit_amount
-                                    } else {
-                                        objData.custpage_amount = objData.custpage_debit_amount
-                                    }
-                                } else {
-                                    objData.custpage_amount = objData.custpage_amount
-                                }
-        
+                                objData.custpage_total_amount_head = objData.custpage_fxamount
+                                objData.custpage_thisweekamt_head
+
                                 let intEntity = objData.custpage_entity_head;
                                 let strEntity = objData.custpage_entity_text;
                                 
                                 let thisWeekAmt = objData.custpage_this_week_amount ? objData.custpage_this_week_amount : 0;
                                 let nextWeekAmt = objData.custpage_next_week_amount ? objData.custpage_next_week_amount : 0;
-                                let amount = objData.custpage_amount ? objData.custpage_amount : 0;
-                                let formula1_3 = objData.custpage_formula_1_3 ? objData.custpage_formula_1_3 : 0;
-                                let formula31_60 = objData.custpage_formula_31_60 ? objData.custpage_formula_31_60 : 0;
-                                let formula61_90 = objData.custpage_formula_61_90 ? objData.custpage_formula_61_90  : 0;
-                                let formulaMore90 = objData.custpage_formula_more_90 ? objData.custpage_formula_more_90 : 0;
+                                // let amount = objData.custpage_amount ? objData.custpage_amount : 0;
+                                let amount = objData.custpage_fxamount ? objData.custpage_fxamount : 0;
+                                let formula1_3 = objData.custpage_1_to_30_head ? objData.custpage_1_to_30_head : 0;
+                                let formula31_60 = objData.custpage_31_to_60_head ? objData.custpage_31_to_60_head : 0;
+                                let formula61_90 = objData.custpage_61_to_90_head ? objData.custpage_61_to_90_head  : 0;
+                                let formulaMore90 = objData.custpage_over_90_head ? objData.custpage_over_90_head : 0;
                                 let fxAmount = objData.custpage_fxamount ? objData.custpage_fxamount : 0;
 
                                 let thisWeekAmount = thisWeekAmt ? parseFloat(thisWeekAmt) : 0;
@@ -355,7 +381,7 @@ define(["N/ui/serverWidget", "N/search", "N/format", "N/file", "N/record", "../L
 
                                 if (!entityDataMap[intEntity]) {
                                     entityDataMap[intEntity] = {
-                                        intEntity: intEntity,
+                                        intEntity: intEntity, 
                                         strEntity: strEntity,
                                         custpage_entity_text: strEntity,
                                         custpage_thisweekamt_head: thisWeekAmount ? thisWeekAmount : 0,
@@ -366,6 +392,9 @@ define(["N/ui/serverWidget", "N/search", "N/format", "N/file", "N/record", "../L
                                         custpage_61_to_90_head: raw61To90 ? raw61To90 : 0,
                                         custpage_over_90_head: rawOver90 ? rawOver90 : 0,
                                         custpage_total_amount_head: rawTotalAmount ? rawTotalAmount : 0,
+                                        custpage_this_week_amount: thisWeekAmount ? thisWeekAmount : 0,
+                                        custpage_next_week_amount: nextWeekAmount ? nextWeekAmount : 0,
+                                        custpage_currency_head: '<b> Total </b>',
                                         data: []
                                     };
                                 } else {
@@ -377,6 +406,9 @@ define(["N/ui/serverWidget", "N/search", "N/format", "N/file", "N/record", "../L
                                     entityDataMap[intEntity].custpage_61_to_90_head += raw61To90;
                                     entityDataMap[intEntity].custpage_over_90_head += rawOver90;
                                     entityDataMap[intEntity].custpage_total_amount_head += rawTotalAmount;
+                                    entityDataMap[intEntity].custpage_this_week_amount += thisWeekAmount;
+                                    entityDataMap[intEntity].custpage_next_week_amount += nextWeekAmount;
+                                    entityDataMap[intEntity].custpage_currency_head = '<b> Total </b>';
                                 }
                             
                                 entityDataMap[intEntity].data.push(objData);
@@ -399,23 +431,6 @@ define(["N/ui/serverWidget", "N/search", "N/format", "N/file", "N/record", "../L
         
         const floatToCurrency = (value) => {
             return format.format({value: Number(value), type: format.Type.CURRENCY});
-        }
-
-        const sumArray = (numbers) => {
-            let results = 0;
-            numbers.forEach(element => {
-                results += parseFloat(element);
-            });
-            log.debug('sumArray results', results);
-            return results;
-        }
-
-        const fnSetSublistValue = (id, value, sublist, arrParam) => {
-            sublist.setSublistValue({
-                id: id,
-                line: arrParam.length,
-                value: '<b>' + value + '</b>'
-            });
         }
 
         const validateKeys = (fieldId) => {
@@ -450,3 +465,24 @@ define(["N/ui/serverWidget", "N/search", "N/format", "N/file", "N/record", "../L
         return { FORM, ACTIONS }
 
     });
+
+// if(objData.custpage_rec_type == 'Journal' || objData.custpage_rec_type == 'Expense Report'){
+//     if (objData.custpage_credit_amount){
+//         objData.custpage_amount = objData.custpage_credit_amount
+//     } else {
+//         objData.custpage_amount = objData.custpage_debit_amount
+//     }
+// } else {
+//     objData.custpage_amount = objData.custpage_amount
+// }
+// var itemField = options.form.getSublist({id: 'custpage_sublist'}).getSublistField({id: 'custpage_this_week', line: line});
+
+// itemField.defaultValue = false
+// itemField.isDisabled = true
+
+// const itemField = sublist.getField({
+//     id: 'custpage_this_week',
+//     line: line
+// });
+
+// itemField.isDisabled = true;
